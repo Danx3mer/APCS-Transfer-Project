@@ -172,7 +172,7 @@ public final class Medea {
             throw new IllegalAccessException("Tried to access admin info as non-teacher!");
 
         for (User user: users) {
-            if (user.getUID() == requestedUID)
+            if (user.getUID().equals(requestedUID))
                 return (Admin) user; // No need to check instanceof b/c UID starting with a guarantees admin
         }
 

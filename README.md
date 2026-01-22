@@ -7,21 +7,17 @@
 ## FEATURES:
 ### Admin mode:
 - Add teachers (and their classes) and students to school!
-- Expel, Suspend, or Warn students!
-- Select the current school semester!
 - Send out report cards!
 
 ### Teacher mode:
 - Add student to class!
 - Send student's final grade in for the semester!
-- Leave students notes on their performance in class!
 
-### Student mode:
-- View classes and grades for selected semester!
+### Student mode: OUTSIDE OF THE SCOPE OF THIS PROJECT
 
 PLEASE NOTE THAT FOR THE EASE OF TESTING MY PROGRAM I HAVE NOT IMPLEMENTED PASSWORD PROTECTION SO THAT YOU DON'T HAVE TO TYPE IN AND REMEMBER MULTIPLE PASSWORDS!
 (Yes it is insecure but this is just a demo to show I can code something of this level)
 
 ## COMPILATION + RUNNING INFORMATION:
 - To Compile, Run `javac *.java`
-- To Run, Run `java Medea`. The default userID
+- To Run, Run `java Medea`. The default userID is admin

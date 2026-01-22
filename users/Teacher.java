@@ -10,6 +10,7 @@ public final class Teacher extends User {
     private ArrayList<String> studentUIDs;
 
     public Teacher(String teacherDetails) {
+        this.studentUIDs = new ArrayList<String>();
         this.parse(teacherDetails);
     }
 
@@ -24,39 +25,13 @@ public final class Teacher extends User {
         while (true) {
             Medea medea = Medea.getInstance();
 
-            final String dashboardMsg = "\n\n[1] Grade Student\n[2] Add Student\n[3] Exit";
+            final String dashboardMsg = "\n[1] Add Student\n[2] Exit";
             System.out.println(dashboardMsg);
 
             Scanner scanner = new Scanner(System.in);
 
             switch (scanner.nextInt()) {
                 case 1: {
-                    System.out.println("What is the student's id? (Must begin w/ an \"s\")");
-                    boolean pass = false;
-                    Student student;
-                    do {
-                        try {
-                            String studentID = scanner.next();
-
-                            if(! studentUIDs.contains(studentID)) System.out.println("You don't have this kid in your class!");
-                    
-                            student = medea.requestStudent(this.getUID(), scanner.next());
-                            
-                            System.out.println("What is the grade you would like to give this student?");
-                            
-                            student.modifyClassData(this.uid, this.className, scanner.nextDouble());
-                        } catch (Exception e) {
-                            if(e instanceof IllegalArgumentException) {
-                                System.out.println("Please enter in a valid student ID! (Must begin w/ an \"s\")");
-                            }
-                        } finally {
-                            pass = true;
-                        }
-                    } while (!pass);
-
-                }
-                    break;
-                case 2: {
                     System.out.println("What is the student's id? (Must begin w/ a \"s\")");
                     String id;
                     boolean pass = false;
@@ -74,7 +49,7 @@ public final class Teacher extends User {
                     System.out.println("Added!");
                 }
                     break;
-                case 3: {
+                case 2: {
                     System.out.println("Logging out...");
                     return;
                 }
@@ -92,7 +67,7 @@ public final class Teacher extends User {
 
         if(this.studentUIDs!=null)                
         for(String sid: this.studentUIDs) {
-            res.concat(sid).concat("+");
+            res = res.concat(sid).concat("+");
         }
 
         return res;
