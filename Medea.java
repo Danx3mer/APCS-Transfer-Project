@@ -2,8 +2,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import javax.naming.NameNotFoundException;
 
 import users.Admin;
 import users.Student;
@@ -21,6 +25,10 @@ public class Medea {
             this.filePath = path;
         }
 
+        /**
+         * Reads the user data from the filepath specified in the constructor
+         * @return The Parsed User Data
+         */
         public ArrayList<User> readUsers() {
             ArrayList<User> inUsers = new ArrayList<User>();
 
@@ -57,8 +65,24 @@ public class Medea {
             return inUsers;
         }
 
+        /**
+         * Deletes the database file and writes the new data to a new file with the same path.
+         * @param users the user data to write to the file
+         */
         public void writeUsers(ArrayList<User> users) {
+            try { 
+                Files.deleteIfExists(Path.of(filePath));
+            } catch(Exception e) {
+                System.out.println("Couldn't clear database file + " + e.getMessage());
+            }
 
+            for(User user: users) {
+                try { 
+                    Files.writeString(Path.of(filePath), user.toString());
+                } catch (Exception e) {
+                    System.out.println("Couldn't write to the database file... + " + e.getMessage());
+                }
+            }
         }
     }
 
@@ -87,5 +111,35 @@ public class Medea {
         }
 
         scanner.close();
+    }
+
+    public Student requestStudent(String authUID, String requestedUID) throws Exception {
+        if(authUID.charAt(0) == 's') throw new IllegalAccessException("Tried to modify student as student!");
+
+        for(User user: users) {
+            if(user.getUID() == requestedUID) return (Student) user; //No need to check instanceof b/c UID starting with s guarantees student
+        }
+        
+        throw new NameNotFoundException("requested id not found");
+    }
+
+    public Teacher requestTeacher(String authUID, String requestedUID) throws Exception {
+        if(authUID.charAt(0) != 'a') throw new IllegalAccessException("Tried to modify teacher as non-admin!");
+
+        for(User user: users) {
+            if(user.getUID() == requestedUID) return (Teacher) user; //No need to check instanceof b/c UID starting with t guarantees teacher
+        }
+        
+        throw new NameNotFoundException("requested id not found");
+    }
+
+    public Admin requestAdmin(String authUID, String requestedUID) throws Exception {
+        if(authUID.charAt(0) != 't') throw new IllegalAccessException("Tried to access admin info as non-teacher!");
+
+        for(User user: users) {
+            if(user.getUID() == requestedUID) return (Admin) user; //No need to check instanceof b/c UID starting with a guarantees admin
+        }
+        
+        throw new NameNotFoundException("requested id not found");
     }
 }
