@@ -185,9 +185,9 @@ public final class Medea {
         users.add(user);
     }
 
-    public boolean checkValid(String authID) {
+    public boolean checkValid(String id) {
         for(User user: users) {
-            if(user.getUID().equals(authID)) return true;
+            if(user.getUID().equals(id)) return true;
         }
         return false;
     }

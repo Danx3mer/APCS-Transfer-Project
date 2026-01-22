@@ -59,6 +59,8 @@ public final class Admin extends User {
                     System.out.println("What is the teacher's class' name?");
                     Medea medea = Medea.getInstance();
                     medea.createUser(this.getUID(), new Teacher(id, scanner.next()));
+
+                    System.out.println("Teacher successfully added to roster!");
                 }
                     break;
                 case 3: {

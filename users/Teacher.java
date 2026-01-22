@@ -23,18 +23,22 @@ public final class Teacher extends User {
         while (true) {
             Medea medea = Medea.getInstance();
 
-            final String dashboardMsg = "\n\n[1] Add Student\n[2] Grade Student\n[3] Exit";
+            final String dashboardMsg = "\n\n[1] Grade Student\n[2] Add Student\n[3] Exit";
             System.out.println(dashboardMsg);
 
             Scanner scanner = new Scanner(System.in);
 
             switch (scanner.nextInt()) {
-                case 2: {
+                case 1: {
                     System.out.println("What is the student's id? (Must begin w/ an \"s\")");
                     boolean pass = false;
                     Student student;
                     do {
                         try {
+                            String studentID = scanner.next();
+
+                            if(! studentUIDs.contains(studentID)) System.out.println("You don't have this kid in your class!");
+                    
                             student = medea.requestStudent(this.getUID(), scanner.next());
                             
                             System.out.println("What is the grade you would like to give this student?");
@@ -51,20 +55,22 @@ public final class Teacher extends User {
 
                 }
                     break;
-                case 1: {
-                    System.out.println("What is the teacher's id? (Must begin w/ a \"t\")");
+                case 2: {
+                    System.out.println("What is the student's id? (Must begin w/ a \"s\")");
                     String id;
                     boolean pass = false;
                     do {
                         id = scanner.next();
-                        if (id.charAt(0) != 't')
-                            System.out.println("Teacher's id must begin with a \"t\"!");
-                        else
+                    
+                        if(medea.checkValid(id) && id.charAt(0) == 's') {
                             pass = true;
+                        }
+                        else System.out.println("This student doesn't exist");
                     } while (!pass);
 
-                    System.out.println("What is the teacher's class' name?");
-                    Medea.getInstance().createUser(this.getUID(), new Teacher(id, scanner.next()));
+                    this.studentUIDs.add(id);
+
+                    System.out.println("Added!");
                 }
                     break;
                 case 3: {
