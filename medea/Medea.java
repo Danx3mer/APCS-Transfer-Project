@@ -48,7 +48,6 @@ public final class Medea {
                 Scanner scanner = new Scanner(new File(this.filePath));
                 while (scanner.hasNextLine()) { // Means there are more users to be read
                     String line = scanner.nextLine();
-                    System.out.println(line);
                     switch (line.charAt(0)) {
                         case 'a': {
                             inUsers.add(new Admin(line));
@@ -71,7 +70,7 @@ public final class Medea {
                 scanner.close();
 
             } catch (FileNotFoundException e) { // File doesn't exist!
-                inUsers.add(new Admin("admin!1!!false")); // Add the default admin account
+                inUsers.add(new Admin("admin!!false")); // Add the default admin account
             }
 
             return inUsers;
@@ -93,7 +92,6 @@ public final class Medea {
             String toString = "";
 
             for (User user : users) {
-                System.out.println(user.toString());
                 toString = toString.concat(user.toString()).concat("\n");
             }
                 try {

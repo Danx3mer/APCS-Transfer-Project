@@ -15,7 +15,8 @@ public final class Teacher extends User {
 
     public Teacher(String id, String className) {
         this.uid = id;
-        this.className = className;        
+        this.className = className;
+        this.studentUIDs = new ArrayList<String>();
     }
 
     @Override
