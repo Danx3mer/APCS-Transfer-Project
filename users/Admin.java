@@ -88,6 +88,7 @@ public final class Admin extends User {
                 break;
                 case 5: {
                     System.out.println("Logging out...");
+                    scanner.close();
                     return;
                 }
                 default: {
