@@ -1,5 +1,7 @@
 package users;
 
+import medea.Medea;
+
 public final class Student extends User {
 
     public Student(String studentDetails) {
@@ -24,4 +26,11 @@ public final class Student extends User {
         throw new UnsupportedOperationException("Unimplemented method 'parse'");
     }
     
+    public boolean modifyClassData(String authID, String className, double grade) {
+        Medea medea = Medea.getInstance();
+
+        if(!medea.checkValid(authID)) return false;
+        
+        return true;
+    }
 }

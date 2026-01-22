@@ -9,14 +9,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.naming.NameNotFoundException;
-
 import users.Admin;
 import users.Student;
 import users.Teacher;
 import users.User;
 
-public class Medea {
+public final class Medea {
     private MedeaIO medeaIO;
     private ArrayList<User> users;
 
@@ -27,6 +25,7 @@ public class Medea {
     }
 
     public static Medea getInstance() {
+        if(instance == null) instance = new Medea("Medea.medea");
         return instance;
     }
 
@@ -88,23 +87,26 @@ public class Medea {
             try {
                 Files.deleteIfExists(Path.of(filePath));
             } catch (Exception e) {
-                System.out.println("Couldn't clear database file + " + e.getMessage());
+                System.out.println("Couldn't clear database file +" + e.getMessage());
             }
 
+            String toString = "";
+
             for (User user : users) {
-                try {
-                    Files.writeString(Path.of(filePath), user.toString());
-                } catch (Exception e) {
-                    System.out.println("Couldn't write to the database file... + " + e.getMessage());
-                }
+                System.out.println(user.toString());
+                toString = toString.concat(user.toString()).concat("\n");
             }
+                try {
+                    Files.writeString(Path.of(filePath), toString);
+                } catch (Exception e) {
+                    System.out.println("Couldn't write to the database file..." + e.getMessage());
+                }
         }
     }
 
     public Medea(String pathToFile) {
         medeaIO = new MedeaIO(pathToFile);
         users = medeaIO.readUsers();
-        this.mainLoop();
     }
 
     public void mainLoop() {
@@ -115,7 +117,7 @@ public class Medea {
                     "WELCOME TO THE MEDEA INTERFACE! PLEASE LOG IN WITH YOUR USERID BELOW, OR EXIT BY TYPING \":wq\":\n>>> ");
 
 
-            String in = scanner.next();
+            String in = scanner.nextLine();
 
             switch (in) {
                 case ":wq": {
@@ -133,7 +135,10 @@ public class Medea {
                 // No need to use a break b/c of return statement
                 default: {
                     for(User user: users) {
-                        if(in.equals(user.getUID())) user.dashboardLoop();
+                        if(in.equals(user.getUID())) {
+                            user.dashboardLoop();
+                            break; //Needed to avoid concurrent mod exception
+                        }
                     }
                 }
             }    
@@ -149,7 +154,7 @@ public class Medea {
                 return (Student) user; // No need to check instanceof b/c UID starting with s guarantees student
         }
 
-        throw new NameNotFoundException("requested id not found");
+        throw new IllegalArgumentException("requested id not found");
     }
 
     public Teacher requestTeacher(String authUID, String requestedUID) throws Exception {
@@ -161,22 +166,29 @@ public class Medea {
                 return (Teacher) user; // No need to check instanceof b/c UID starting with t guarantees teacher
         }
 
-        throw new NameNotFoundException("requested id not found");
+        throw new IllegalArgumentException("requested id not found");
     }
 
     public Admin requestAdmin(String authUID, String requestedUID) throws Exception {
         if (authUID.charAt(0) != 't')
             throw new IllegalAccessException("Tried to access admin info as non-teacher!");
 
-        for (User user : users) {
+        for (User user: users) {
             if (user.getUID() == requestedUID)
                 return (Admin) user; // No need to check instanceof b/c UID starting with a guarantees admin
         }
 
-        throw new NameNotFoundException("requested id not found");
+        throw new IllegalArgumentException("requested id not found");
     }
 
     public void createUser(String authID, User user) {
         users.add(user);
+    }
+
+    public boolean checkValid(String authID) {
+        for(User user: users) {
+            if(user.getUID().equals(authID)) return true;
+        }
+        return false;
     }
 }

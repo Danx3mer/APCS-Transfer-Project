@@ -12,10 +12,18 @@ public final class Admin extends User {
         this.parse(admDetails);
     }
 
+    public int getSemester() {
+        return this.semester;
+    }
+
+    public boolean getReportCardStatus() {
+        return this.reportCardsEditable;
+    }
+
     @Override
     public void dashboardLoop() {
         while (true) {
-            final String dashboardMsg = "[1] Add Student\n[2] Add Teacher\n[3] Change Semester\n[4] Change report cards to be editable or send them out\n[5] Exit";
+            final String dashboardMsg = "\n\n[1] Add Student\n[2] Add Teacher\n[3] Change Semester\n[4] Change report cards to be editable or send them out\n[5] Exit";
             System.out.println(dashboardMsg);
 
             Scanner scanner = new Scanner(System.in);
@@ -29,7 +37,8 @@ public final class Admin extends User {
                         if (id.charAt(0) != 's')
                             System.out.println("Student's id must begin with an \"s\"!");
                         else {
-                            Medea.getInstance().createUser(this.getUID(), new Student(id));
+                            Medea medea = Medea.getInstance();
+                            medea.createUser(this.getUID(), new Student(id));
                             pass = true;
                         }
                     } while (!pass);
@@ -48,7 +57,8 @@ public final class Admin extends User {
                     } while (!pass);
 
                     System.out.println("What is the teacher's class' name?");
-                    Medea.getInstance().createUser(this.getUID(), new Teacher(id, scanner.next()));
+                    Medea medea = Medea.getInstance();
+                    medea.createUser(this.getUID(), new Teacher(id, scanner.next()));
                 }
                     break;
                 case 3: {
@@ -88,7 +98,6 @@ public final class Admin extends User {
                 break;
                 case 5: {
                     System.out.println("Logging out...");
-                    scanner.close();
                     return;
                 }
                 default: {
@@ -109,6 +118,6 @@ public final class Admin extends User {
         int sep2 = userDetails.indexOf("!!");
         this.uid = userDetails.substring(0, sep1);
         this.semester = Integer.valueOf(userDetails.substring(sep1 + 1, sep2));
-        this.reportCardsEditable = Boolean.valueOf(userDetails.substring(sep2 + 1));
+        this.reportCardsEditable = Boolean.valueOf(userDetails.substring(sep2 + 2));
     }
 }
