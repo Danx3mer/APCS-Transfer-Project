@@ -69,8 +69,8 @@ public class Medea {
     }
 
     public void mainLoop() {
-        System.out.print(
-                "WELCOME TO THE MEDEA SCHOOL INTERFACE! PLEASE LOG IN WITH YOUR USERID BELOW, OR EXIT BY TYPING \":wq\":\n>>> ");
+        System.out.print("WELCOME TO THE MEDEA INTERFACE! PLEASE LOG IN WITH YOUR USERID BELOW, OR EXIT BY TYPING \":wq\":\n>>> ");
+
         Scanner scanner = new Scanner(System.in);
 
         switch (scanner.next()) {
