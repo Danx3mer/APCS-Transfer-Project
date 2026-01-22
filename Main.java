@@ -1,5 +1,5 @@
 public class Main {
     public static void main() {
-        Medea medea = new Medea("/Medea.ini");
+        Medea medea = new Medea("Medea.medea");
     }
 }
