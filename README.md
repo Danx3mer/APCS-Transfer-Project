@@ -11,7 +11,6 @@
 
 ### Teacher mode:
 - Add student to class!
-- Send student's final grade in for the semester!
 
 ### Student mode: OUTSIDE OF THE SCOPE OF THIS PROJECT
 
