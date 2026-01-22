@@ -3,3 +3,6 @@
 
 # Medea database files
 *.medea
+
+# vscode config stuff
+/.vscode
