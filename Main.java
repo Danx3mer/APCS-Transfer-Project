@@ -1,5 +1,7 @@
+import medea.Medea;
+
 public class Main {
     public static void main() {
-        Medea medea = new Medea("Medea.medea");
+        Medea medea = Medea.getInstance();
     }
 }

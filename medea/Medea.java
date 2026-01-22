@@ -1,3 +1,5 @@
+package medea;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,6 +20,16 @@ public class Medea {
     private MedeaIO medeaIO;
     private ArrayList<User> users;
 
+    static private Medea instance;
+
+    static {
+        instance = new Medea("Medea.medea");
+    }
+
+    public static Medea getInstance() {
+        return instance;
+    }
+
     private class MedeaIO {
         private String filePath;
 
@@ -27,6 +39,7 @@ public class Medea {
 
         /**
          * Reads the user data from the filepath specified in the constructor
+         * 
          * @return The Parsed User Data
          */
         public ArrayList<User> readUsers() {
@@ -59,25 +72,27 @@ public class Medea {
                 scanner.close();
 
             } catch (FileNotFoundException e) { // File doesn't exist!
-                inUsers.add(new Admin("aadmin")); // Add the default admin account
+                inUsers.add(new Admin("admin!1!!false")); // Add the default admin account
             }
 
             return inUsers;
         }
 
         /**
-         * Deletes the database file and writes the new data to a new file with the same path.
+         * Deletes the database file and writes the new data to a new file with the same
+         * path.
+         * 
          * @param users the user data to write to the file
          */
         public void writeUsers(ArrayList<User> users) {
-            try { 
+            try {
                 Files.deleteIfExists(Path.of(filePath));
-            } catch(Exception e) {
+            } catch (Exception e) {
                 System.out.println("Couldn't clear database file + " + e.getMessage());
             }
 
-            for(User user: users) {
-                try { 
+            for (User user : users) {
+                try {
                     Files.writeString(Path.of(filePath), user.toString());
                 } catch (Exception e) {
                     System.out.println("Couldn't write to the database file... + " + e.getMessage());
@@ -93,53 +108,75 @@ public class Medea {
     }
 
     public void mainLoop() {
-        System.out.print("WELCOME TO THE MEDEA INTERFACE! PLEASE LOG IN WITH YOUR USERID BELOW, OR EXIT BY TYPING \":wq\":\n>>> ");
-
         Scanner scanner = new Scanner(System.in);
 
-        switch (scanner.next()) {
-            case ":wq": {
-                try {
-                    medeaIO.writeUsers(users);
-                    System.out.println("\nFILE HAS BEEN WRITTEN TO SUCCESSFULLY!");
-                } catch (Exception ex) {
-                    System.out.println("AN ERROR OCCURED WHILE WRITING TO THE FILE...\nERROR: " + ex.getMessage());
+        while (true) {
+            System.out.print(
+                    "WELCOME TO THE MEDEA INTERFACE! PLEASE LOG IN WITH YOUR USERID BELOW, OR EXIT BY TYPING \":wq\":\n>>> ");
+
+
+            String in = scanner.next();
+
+            switch (in) {
+                case ":wq": {
+                    try {
+                        medeaIO.writeUsers(users);
+                        System.out.println("\nFILE HAS BEEN WRITTEN TO SUCCESSFULLY!");
+                    } catch (Exception ex) {
+                        System.out.println("AN ERROR OCCURED WHILE WRITING TO THE FILE...\nERROR: " + ex.getMessage());
+                    }
+
+                    System.out.print("\nGOODBYE!\n");
+                    scanner.close();
+                    return;
                 }
-
-                System.out.print("\nGOODBYE!\n");
-            }
+                // No need to use a break b/c of return statement
+                default: {
+                    for(User user: users) {
+                        if(in.equals(user.getUID())) user.dashboardLoop();
+                    }
+                }
+            }    
         }
-
-        scanner.close();
     }
 
     public Student requestStudent(String authUID, String requestedUID) throws Exception {
-        if(authUID.charAt(0) == 's') throw new IllegalAccessException("Tried to modify student as student!");
+        if (authUID.charAt(0) == 's')
+            throw new IllegalAccessException("Tried to modify student as student!");
 
-        for(User user: users) {
-            if(user.getUID() == requestedUID) return (Student) user; //No need to check instanceof b/c UID starting with s guarantees student
+        for (User user : users) {
+            if (user.getUID() == requestedUID)
+                return (Student) user; // No need to check instanceof b/c UID starting with s guarantees student
         }
-        
+
         throw new NameNotFoundException("requested id not found");
     }
 
     public Teacher requestTeacher(String authUID, String requestedUID) throws Exception {
-        if(authUID.charAt(0) != 'a') throw new IllegalAccessException("Tried to modify teacher as non-admin!");
+        if (authUID.charAt(0) != 'a')
+            throw new IllegalAccessException("Tried to modify teacher as non-admin!");
 
-        for(User user: users) {
-            if(user.getUID() == requestedUID) return (Teacher) user; //No need to check instanceof b/c UID starting with t guarantees teacher
+        for (User user : users) {
+            if (user.getUID() == requestedUID)
+                return (Teacher) user; // No need to check instanceof b/c UID starting with t guarantees teacher
         }
-        
+
         throw new NameNotFoundException("requested id not found");
     }
 
     public Admin requestAdmin(String authUID, String requestedUID) throws Exception {
-        if(authUID.charAt(0) != 't') throw new IllegalAccessException("Tried to access admin info as non-teacher!");
+        if (authUID.charAt(0) != 't')
+            throw new IllegalAccessException("Tried to access admin info as non-teacher!");
 
-        for(User user: users) {
-            if(user.getUID() == requestedUID) return (Admin) user; //No need to check instanceof b/c UID starting with a guarantees admin
+        for (User user : users) {
+            if (user.getUID() == requestedUID)
+                return (Admin) user; // No need to check instanceof b/c UID starting with a guarantees admin
         }
-        
+
         throw new NameNotFoundException("requested id not found");
+    }
+
+    public void createUser(String authID, User user) {
+        users.add(user);
     }
 }

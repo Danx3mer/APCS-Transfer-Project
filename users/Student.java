@@ -7,7 +7,7 @@ public final class Student extends User {
     }
 
     @Override
-    public String dashboardLoop() {
+    public void dashboardLoop() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'dashboardLoop'");
     }
